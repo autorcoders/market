@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetGems - Ваш инвентарь</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: 50px;
+        }
+        
+        .page {
+            display: none;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-end;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .balance-btn {
+            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .balance-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .welcome-container {
+            text-align: center;
+            padding-top: 30px;
+        }
+        
+        .getgems-logo {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        
+        .grades {
+            font-size: 24px;
+            margin: 30px 0;
+            line-height: 1.6;
+            color: #FFD700;
+        }
+        
+        .photo-container {
+            margin: 30px auto;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(106, 17, 203, 0.3);
+        }
+        
+        .continue-btn, .add-gift-btn {
+            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 30px;
+            width: 100%;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .continue-btn:hover, .add-gift-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .inventory-container {
+            text-align: center;
+            padding-top: 30px;
+        }
+        
+        .inventory-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: #FFD700;
+        }
+        
+        .empty-inventory {
+            margin: 50px 0;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+        
+        .empty-text {
+            font-size: 20px;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        
+        .sad-emoji {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .info-container {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .info-text {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .username-link {
+            color: #2575fc;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .warning {
+            color: #ff4757;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .wallet-address {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 90%;
+            width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #FFD700;
+            text-align: center;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Balance -->
+    <div class="header">
+        <button class="balance-btn" onclick="showBalanceModal()">
+            Баланс: <span id="balance">0</span> 💎
+        </button>
+    </div>
+    
+    <!-- Page 1: Welcome -->
+    <div class="page active" id="page1">
+        <div class="welcome-container">
+            <div class="getgems-logo">GetGems</div>
+            <div class="grades">
+                A+<br>
+                A<br>
+                B+<br>
+                B<br>
+                C+<br>
+                C<br>
+                D
+            </div>
+            <div class="photo-container">
+                💎
+            </div>
+            <button class="continue-btn" onclick="goToPage(2)">
+                Продолжить
+            </button>
+        </div>
+    </div>
+    
+    <!-- Page 2: Inventory -->
+    <div class="page" id="page2">
+        <div class="inventory-container">
+            <h1 class="inventory-title">Инвентарь</h1>
+            <div class="empty-inventory">
+                <div class="sad-emoji">😞</div>
+                <div class="empty-text">Привет! Это твой инвентарь, пока что тут пусто</div>
+            </div>
+            <button class="add-gift-btn" onclick="goToPage(3)">
+                Добавить подарок
+            </button>
+            <button class="back-btn" onclick="goToPage(1)">
+                ← Назад
+            </button>
+        </div>
+    </div>
+    
+    <!-- Page 3: Add Gift -->
+    <div class="page" id="page3">
+        <div class="inventory-container">
+            <h1 class="inventory-title">Добавить подарок</h1>
+            <div class="info-container">
+                <p class="info-text">
+                    Чтобы пополнить инвентарь подарком передавайте его на 
+                    <a href="https://t.me/GiftsGetGems" class="username-link" onclick="openTelegram('GiftsGetGems')">
+                        @GiftsGetGems
+                    </a>
+                </p>
+                <p class="info-text warning">
+                    Сверяйте юзернейм! Есть аккаунты мошенников ‼️
+                </p>
+                <p class="info-text">
+                    Если вы отправите подарок на какие-то другие аккаунты кроме 
+                    <a href="https://t.me/GiftsGetGems" class="username-link" onclick="openTelegram('GiftsGetGems')">
+                        @GiftsGetGems
+                    </a> 
+                    подарок будет утерян, мы не несем ответственность за его сохранность при передаче
+                </p>
+            </div>
+            <button class="back-btn" onclick="goToPage(2)">
+                ← Назад в инвентарь
+            </button>
+        </div>
+    </div>
+    
+    <!-- Balance Modal -->
+    <div class="modal" id="balanceModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeBalanceModal()">×</button>
+            <h2 class="modal-title">Пополнение баланса</h2>
+            <div class="info-container">
+                <p class="info-text">
+                    Для пополнения переведите по кошельку:
+                </p>
+                <div class="wallet-address">
+                    UQB0CjyJOzs9s7kyJcqQJUOI3R7QCR9JwWNS9HUTg9TAWhSy
+                </div>
+                <p class="info-text">
+                    Сумму которую хотите пополнить и введите комментарий:<br>
+                    <strong>#(Рандомный набор пяти букв)</strong>
+                </p>
+                <p class="info-text warning">
+                    Если вы не укажите комментарий средства не будут пополнены ‼️
+                </p>
+            </div>
+            <button class="continue-btn" onclick="copyWallet()">
+                Скопировать кошелек
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize Telegram Web App
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        
+        let currentPage = 1;
+        let balance = 0;
+        
+        function goToPage(pageNumber) {
+            document.getElementById('page' + currentPage).classList.remove('active');
+            document.getElementById('page' + pageNumber).classList.add('active');
+            currentPage = pageNumber;
+        }
+        
+        function showBalanceModal() {
+            document.getElementById('balanceModal').classList.add('active');
+        }
+        
+        function closeBalanceModal() {
+            document.getElementById('balanceModal').classList.remove('active');
+        }
+        
+        function openTelegram(username) {
+            window.open('https://t.me/' + username, '_blank');
+        }
+        
+        function copyWallet() {
+            const wallet = 'UQB0CjyJOzs9s7kyJcqQJUOI3R7QCR9JwWNS9HUTg9TAWhSy';
+            navigator.clipboard.writeText(wallet).then(() => {
+                alert('Кошелек скопирован!');
+            });
+        }
+        
+        // Handle /SunfilTeam command
+        function handleCommand(command) {
+            if (command.startsWith('/SunfilTeam')) {
+                const parts = command.split(' ');
+                if (parts.length === 2) {
+                    const amount = parseInt(parts[1]);
+                    if (!isNaN(amount)) {
+                        balance = amount;
+                        document.getElementById('balance').textContent = balance;
+                        alert('Баланс установлен: ' + amount + ' 💎');
+                    }
+                }
+            }
+        }
+        
+        // Initialize balance display
+        document.getElementById('balance').textContent = balance;
+        
+        // Listen for messages from Telegram
+        tg.onEvent('message', (event) => {
+            if (event.data && event.data.command) {
+                handleCommand(event.data.command);
+            }
+        });
+        
+        // Prevent modal close when clicking inside
+        document.querySelector('.modal-content').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+        
+        // Close modal when clicking outside
+        document.getElementById('balanceModal').addEventListener('click', (e) => {
+            if (e.target.id === 'balanceModal') {
+                closeBalanceModal();
+            }
+        });
+    </script>
+</body>
+</html>
