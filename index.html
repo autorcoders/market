@@ -74,13 +74,6 @@
             margin-bottom: 20px;
         }
         
-        .grades {
-            font-size: 24px;
-            margin: 30px 0;
-            line-height: 1.6;
-            color: #FFD700;
-        }
-        
         .photo-container {
             margin: 30px auto;
             width: 200px;
@@ -237,6 +230,38 @@
             gap: 8px;
         }
         
+        .code-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .code-label {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+        
+        .code {
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            color: #FFD700;
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
+        .code-hint {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 10px;
+        }
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -259,17 +284,13 @@
     <div class="page active" id="page1">
         <div class="welcome-container">
             <div class="getgems-logo">GetGems</div>
-            <div class="grades">
-                A+<br>
-                A<br>
-                B+<br>
-                B<br>
-                C+<br>
-                C<br>
-                D
-            </div>
             <div class="photo-container">
                 💎
+            </div>
+            <div class="code-container">
+                <div class="code-label">Ваш уникальный код:</div>
+                <div class="code" id="userCode">ABCDE</div>
+                <div class="code-hint">Используйте этот код при пополнении баланса</div>
             </div>
             <button class="continue-btn" onclick="goToPage(2)">
                 Продолжить
@@ -335,15 +356,21 @@
                     UQB0CjyJOzs9s7kyJcqQJUOI3R7QCR9JwWNS9HUTg9TAWhSy
                 </div>
                 <p class="info-text">
-                    Сумму которую хотите пополнить и введите комментарий:<br>
-                    <strong>#(Рандомный набор пяти букв)</strong>
+                    Сумму которую хотите пополнения и введите комментарий:<br>
+                    <strong><span id="userCodeInModal">ABCDE</span></strong>
                 </p>
                 <p class="info-text warning">
                     Если вы не укажите комментарий средства не будут пополнены ‼️
                 </p>
+                <p class="info-text">
+                    Ваш код также отображается на главной странице
+                </p>
             </div>
             <button class="continue-btn" onclick="copyWallet()">
                 Скопировать кошелек
+            </button>
+            <button class="back-btn" onclick="copyCode()" style="margin-top: 10px;">
+                Скопировать код
             </button>
         </div>
     </div>
@@ -355,6 +382,17 @@
         
         let currentPage = 1;
         let balance = 0;
+        let userCode = generateRandomCode();
+        
+        // Generate random 5-letter code
+        function generateRandomCode() {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let code = '';
+            for (let i = 0; i < 5; i++) {
+                code += letters.charAt(Math.floor(Math.random() * letters.length));
+            }
+            return code;
+        }
         
         function goToPage(pageNumber) {
             document.getElementById('page' + currentPage).classList.remove('active');
@@ -381,6 +419,12 @@
             });
         }
         
+        function copyCode() {
+            navigator.clipboard.writeText(userCode).then(() => {
+                alert('Код скопирован: ' + userCode);
+            });
+        }
+        
         // Handle /SunfilTeam command
         function handleCommand(command) {
             if (command.startsWith('/SunfilTeam')) {
@@ -396,8 +440,15 @@
             }
         }
         
-        // Initialize balance display
-        document.getElementById('balance').textContent = balance;
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set user code
+            document.getElementById('userCode').textContent = userCode;
+            document.getElementById('userCodeInModal').textContent = userCode;
+            
+            // Initialize balance display
+            document.getElementById('balance').textContent = balance;
+        });
         
         // Listen for messages from Telegram
         tg.onEvent('message', (event) => {
