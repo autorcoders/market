@@ -46,7 +46,7 @@
         }
         
         .balance-btn {
-            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            background: linear-gradient(45deg, #0088cc 0%, #00aaff 100%);
             color: white;
             border: none;
             padding: 8px 16px;
@@ -60,6 +60,16 @@
             transform: scale(1.05);
         }
         
+        .ton-badge {
+            background: #0088cc;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
         .welcome-container {
             text-align: center;
             padding-top: 30px;
@@ -68,7 +78,7 @@
         .getgems-logo {
             font-size: 48px;
             font-weight: bold;
-            background: linear-gradient(45deg, #FFD700, #FFA500);
+            background: linear-gradient(45deg, #0088cc, #00aaff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 20px;
@@ -78,18 +88,25 @@
             margin: 30px auto;
             width: 200px;
             height: 200px;
-            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            background: linear-gradient(45deg, #0088cc 0%, #00aaff 100%);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 64px;
             color: white;
-            box-shadow: 0 10px 30px rgba(106, 17, 203, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 136, 204, 0.3);
+        }
+        
+        .ton-icon {
+            font-size: 72px;
+            background: linear-gradient(45deg, #0088cc, #00aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .continue-btn, .add-gift-btn {
-            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            background: linear-gradient(45deg, #0088cc 0%, #00aaff 100%);
             color: white;
             border: none;
             padding: 15px 30px;
@@ -114,7 +131,9 @@
         .inventory-title {
             font-size: 28px;
             margin-bottom: 30px;
-            color: #FFD700;
+            background: linear-gradient(45deg, #0088cc, #00aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .empty-inventory {
@@ -151,7 +170,7 @@
         }
         
         .username-link {
-            color: #2575fc;
+            color: #0088cc;
             text-decoration: none;
             font-weight: bold;
             cursor: pointer;
@@ -171,6 +190,16 @@
             word-break: break-all;
             margin: 15px 0;
             font-size: 14px;
+            border-left: 4px solid #0088cc;
+        }
+        
+        .ton-wallet-note {
+            color: #0088cc;
+            font-weight: bold;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .modal {
@@ -202,7 +231,9 @@
         .modal-title {
             font-size: 24px;
             margin-bottom: 20px;
-            color: #FFD700;
+            background: linear-gradient(45deg, #0088cc, #00aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-align: center;
         }
         
@@ -236,6 +267,7 @@
             border-radius: 15px;
             margin: 30px 0;
             text-align: center;
+            border-left: 4px solid #0088cc;
         }
         
         .code-label {
@@ -248,7 +280,7 @@
             font-size: 36px;
             font-weight: bold;
             letter-spacing: 5px;
-            color: #FFD700;
+            color: #00aaff;
             font-family: monospace;
             background: rgba(0, 0, 0, 0.3);
             padding: 10px 20px;
@@ -276,7 +308,7 @@
     <!-- Header with Balance -->
     <div class="header">
         <button class="balance-btn" onclick="showBalanceModal()">
-            Баланс: <span id="balance">0</span> 💎
+            Баланс: <span id="balance">0</span> TON
         </button>
     </div>
     
@@ -285,12 +317,12 @@
         <div class="welcome-container">
             <div class="getgems-logo">GetGems</div>
             <div class="photo-container">
-                💎
+                <div class="ton-icon">TON</div>
             </div>
             <div class="code-container">
-                <div class="code-label">Ваш уникальный код:</div>
+                <div class="code-label">Ваш уникальный код для пополнения:</div>
                 <div class="code" id="userCode">ABCDE</div>
-                <div class="code-hint">Используйте этот код при пополнении баланса</div>
+                <div class="code-hint">Используйте этот код как комментарий при переводе TON</div>
             </div>
             <button class="continue-btn" onclick="goToPage(2)">
                 Продолжить
@@ -347,27 +379,30 @@
     <div class="modal" id="balanceModal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeBalanceModal()">×</button>
-            <h2 class="modal-title">Пополнение баланса</h2>
+            <h2 class="modal-title">Пополнение баланса TON</h2>
             <div class="info-container">
                 <p class="info-text">
-                    Для пополнения переведите по кошельку:
+                    Для пополнения переведите TON на кошелек:
                 </p>
                 <div class="wallet-address">
                     UQB0CjyJOzs9s7kyJcqQJUOI3R7QCR9JwWNS9HUTg9TAWhSy
                 </div>
+                <div class="ton-wallet-note">
+                    <span>Ⓣ</span> <span>TON кошелек</span>
+                </div>
                 <p class="info-text">
-                    Сумму которую хотите пополнения и введите комментарий:<br>
+                    Сумму которую хотите пополнить и введите комментарий:<br>
                     <strong><span id="userCodeInModal">ABCDE</span></strong>
                 </p>
                 <p class="info-text warning">
                     Если вы не укажите комментарий средства не будут пополнены ‼️
                 </p>
                 <p class="info-text">
-                    Ваш код также отображается на главной странице
+                    Ваш уникальный код также отображается на главной странице
                 </p>
             </div>
             <button class="continue-btn" onclick="copyWallet()">
-                Скопировать кошелек
+                Скопировать TON кошелек
             </button>
             <button class="back-btn" onclick="copyCode()" style="margin-top: 10px;">
                 Скопировать код
@@ -415,7 +450,7 @@
         function copyWallet() {
             const wallet = 'UQB0CjyJOzs9s7kyJcqQJUOI3R7QCR9JwWNS9HUTg9TAWhSy';
             navigator.clipboard.writeText(wallet).then(() => {
-                alert('Кошелек скопирован!');
+                alert('TON кошелек скопирован!');
             });
         }
         
@@ -434,7 +469,7 @@
                     if (!isNaN(amount)) {
                         balance = amount;
                         document.getElementById('balance').textContent = balance;
-                        alert('Баланс установлен: ' + amount + ' 💎');
+                        alert('Баланс TON установлен: ' + amount);
                     }
                 }
             }
