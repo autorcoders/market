@@ -60,16 +60,6 @@
             transform: scale(1.05);
         }
         
-        .ton-badge {
-            background: #0088cc;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-        
         .welcome-container {
             text-align: center;
             padding-top: 30px;
@@ -89,7 +79,7 @@
             border: 2px solid rgba(0, 136, 204, 0.3);
             border-radius: 20px;
             padding: 25px;
-            margin: 30px 0;
+            margin: 20px 0 30px 0;
             text-align: left;
             backdrop-filter: blur(10px);
         }
@@ -123,23 +113,32 @@
             font-weight: 600;
         }
         
-        .photo-container {
-            margin: 30px auto;
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(45deg, #0088cc 0%, #00aaff 100%);
-            border-radius: 20px;
+        .diamond-container {
+            margin: 20px auto 30px auto;
+            width: 180px;
+            height: 180px;
+            background: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 64px;
-            color: white;
-            box-shadow: 0 10px 30px rgba(0, 136, 204, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            border: 2px solid #0088cc;
         }
         
-        .ton-icon {
-            font-size: 72px;
+        .diamond-inner {
+            width: 170px;
+            height: 170px;
+            background: #111111;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0, 136, 204, 0.5);
+        }
+        
+        .diamond-icon-large {
+            font-size: 60px;
             background: linear-gradient(45deg, #0088cc, #00aaff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -301,41 +300,37 @@
             gap: 8px;
         }
         
-        .code-container {
-            background: linear-gradient(135deg, rgba(0, 136, 204, 0.1), rgba(0, 170, 255, 0.1));
-            border: 2px solid rgba(0, 136, 204, 0.3);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
+        .code-display {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
             text-align: center;
-            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 136, 204, 0.3);
         }
         
         .code-label {
-            font-size: 18px;
+            font-size: 16px;
             color: #aaa;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
-        .code {
-            font-size: 36px;
+        .code-value {
+            font-size: 28px;
             font-weight: bold;
-            letter-spacing: 5px;
+            letter-spacing: 3px;
             color: #00aaff;
             font-family: monospace;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px 25px;
-            border-radius: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
             display: inline-block;
-            margin: 10px 0;
-            border: 2px solid rgba(0, 170, 255, 0.3);
         }
         
         .code-hint {
             font-size: 14px;
             color: #aaa;
             margin-top: 10px;
-            line-height: 1.5;
         }
         
         @keyframes fadeIn {
@@ -361,8 +356,10 @@
         <div class="welcome-container">
             <div class="getgems-logo">GetGems</div>
             
-            <div class="photo-container">
-                <div class="ton-icon">◇</div>
+            <div class="diamond-container">
+                <div class="diamond-inner">
+                    <div class="diamond-icon-large">◇</div>
+                </div>
             </div>
             
             <div class="marketplace-info">
@@ -373,12 +370,6 @@
                     Это NFT-маркетплейс и торговая платформа, созданная в экосистеме 
                     <span class="ton-feature">TON (The Open Network)</span>. Он позволяет пользователям безопасно покупать, продавать NFT и управлять цифровыми активами.
                 </p>
-            </div>
-            
-            <div class="code-container">
-                <div class="code-label">Ваш уникальный код для пополнения:</div>
-                <div class="code">CANJE</div>
-                <div class="code-hint">Используйте этот код как комментарий при переводе TON</div>
             </div>
             
             <button class="continue-btn" onclick="goToPage(2)">
@@ -447,10 +438,13 @@
                 <div class="ton-wallet-note">
                     <span>Ⓣ</span> <span>TON кошелек</span>
                 </div>
-                <p class="info-text">
-                    Сумму которую хотите пополнить и введите комментарий:<br>
-                    <strong><span id="userCodeInModal">CANJE</span></strong>
-                </p>
+                
+                <div class="code-display">
+                    <div class="code-label">Ваш уникальный код для пополнения:</div>
+                    <div class="code-value" id="userCodeInModal">CANJE</div>
+                    <div class="code-hint">Используйте этот код как комментарий при переводе TON</div>
+                </div>
+                
                 <p class="info-text warning">
                     Если вы не укажите комментарий средства не будут пополнены ‼️
                 </p>
@@ -471,6 +465,17 @@
         
         let currentPage = 1;
         let balance = 0;
+        let userCode = generateRandomCode();
+        
+        // Generate random 5-letter code
+        function generateRandomCode() {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let code = '';
+            for (let i = 0; i < 5; i++) {
+                code += letters.charAt(Math.floor(Math.random() * letters.length));
+            }
+            return code;
+        }
         
         function goToPage(pageNumber) {
             document.getElementById('page' + currentPage).classList.remove('active');
@@ -498,9 +503,8 @@
         }
         
         function copyCode() {
-            const code = 'CANJE';
-            navigator.clipboard.writeText(code).then(() => {
-                alert('Код скопирован: ' + code);
+            navigator.clipboard.writeText(userCode).then(() => {
+                alert('Код скопирован: ' + userCode);
             });
         }
         
@@ -521,8 +525,11 @@
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Set fixed code
-            document.getElementById('userCodeInModal').textContent = 'CANJE';
+            // Generate new random code on each page load
+            userCode = generateRandomCode();
+            
+            // Set the code in modal
+            document.getElementById('userCodeInModal').textContent = userCode;
             
             // Initialize balance display
             document.getElementById('balance').textContent = balance;
